@@ -32,7 +32,7 @@ public class Question {
     private LocalDateTime updatedDateTime;
 
     @Column(nullable = false)
-    private boolean isDeleted;
+    private boolean hasDeleted;
 
     @JsonIgnore
     @OneToMany(mappedBy = "question")
@@ -47,7 +47,7 @@ public class Question {
         this.contents = contents;
         this.createdDateTime = now;
         this.updatedDateTime = now;
-        this.isDeleted = false;
+        this.hasDeleted = false;
     }
 
     public Long getId() {
@@ -102,8 +102,8 @@ public class Question {
         return updatedDateTime.format(FormatConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 
-    public boolean isDeleted() {
-        return isDeleted;
+    public boolean hasDeleted() {
+        return hasDeleted;
     }
 
     public Collection<Answer> getAnswers() {
@@ -119,7 +119,7 @@ public class Question {
     }
 
     public Long getAnswerCountExceptDeleted() {
-        return answers.stream().filter(answer -> !answer.isDeleted()).count();
+        return answers.stream().filter(answer -> !answer.hasDeleted()).count();
     }
 
     public void updateQuestionData(String title, String contents, LocalDateTime updatedDateTime) {
@@ -142,7 +142,7 @@ public class Question {
     }
 
     public Question delete() {
-        this.isDeleted = true;
+        this.hasDeleted = true;
         return this;
     }
 }

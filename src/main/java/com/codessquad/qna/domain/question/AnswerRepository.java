@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnswerRepository extends CrudRepository<Answer, Long> {
-    List<Answer> findByQuestionIdAndIsDeletedFalse(Long questionId);
+    List<Answer> findByQuestionIdAndHasDeletedFalse(Long questionId);
 
     Optional<Answer> findByQuestionIdAndId(Long questionId, Long answerId);
 
     @Modifying
-    @Query("update Answer a set a.isDeleted = true where a.question = :question")
+    @Query("update Answer a set a.hasDeleted = true where a.question = :question")
     void deleteAnswersInQuestion(@Param("question") Question question);
 }

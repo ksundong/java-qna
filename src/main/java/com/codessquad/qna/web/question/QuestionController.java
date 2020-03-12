@@ -33,7 +33,7 @@ public class QuestionController {
 
     @GetMapping("")
     public String goQuestionPage(Model model, @RequestParam(defaultValue = "1", required = false) int page) {
-        final int totalCount = questionRepository.countByIsDeletedFalse();
+        final int totalCount = questionRepository.countByHasDeletedFalse();
         final int size = 15;
         final int maxPage = totalCount / size + (totalCount % size == 0 ? 0 : 1);
 
@@ -42,7 +42,7 @@ public class QuestionController {
         }
 
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("createdDateTime").descending());
-        model.addAttribute("questions", questionRepository.findAllByIsDeletedFalse(pageRequest).getContent());
+        model.addAttribute("questions", questionRepository.findAllByHasDeletedFalse(pageRequest).getContent());
         model.addAttribute("maxPage", maxPage);
         return "main";
     }
@@ -64,7 +64,7 @@ public class QuestionController {
     public String showQuestion(@PathVariable Long id, Model model, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         Question question = getQuestionIfExist(id);
-        List<Answer> answers = answerRepository.findByQuestionIdAndIsDeletedFalse(id);
+        List<Answer> answers = answerRepository.findByQuestionIdAndHasDeletedFalse(id);
 
         model.addAttribute("question", question);
         model.addAttribute("isLoginUserEqualsWriter", question.isWrittenBy(loginUser));
@@ -122,7 +122,7 @@ public class QuestionController {
     }
 
     private Question getQuestionIfExist(Long id) {
-        return questionRepository.findByIdAndIsDeleted(id, false).orElseThrow(QuestionNotFoundException::new);
+        return questionRepository.findByIdAndHasDeleted(id, false).orElseThrow(QuestionNotFoundException::new);
     }
 
 }
